@@ -4,287 +4,235 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lohrbook</title>
-<meta name="description" content="Scan Sheet (iPhone) and Scan Office (Mac): check equipment in and out against a list. Built by a broadcast lighting designer. Free beta.">
+<meta name="description" content="Scan Sheet and Scan Office: gear check-in for lighting, grip and production equipment. Your crew checks the list on their iPhones; you get a record of what came in, what didn't, and who checked it.">
 <meta property="og:title" content="Lohrbook: Scan Sheet and Scan Office">
-<meta property="og:description" content="Check gear in on your phone. The office sees what's missing. Free beta.">
-<meta property="og:image" content="https://lohrbook.com/img/phone-check.jpg">
+<meta property="og:description" content="Know what came in, what didn't, and who checked it. Free beta.">
+<meta property="og:image" content="https://lohrbook.com/img/office-report.jpg">
 <link rel="icon" type="image/png" href="img/icon-scan-sheet.png">
 <link rel="apple-touch-icon" href="img/icon-scan-sheet.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Same look as the guides: warm "house" paper, worklight amber, cue blue, tally red. */
+/* The apps' own look (Scan Sheet Visual Standards): grey-green paper, ink, ink-blue, one strip of spike-tape yellow. */
 :root{
-  --house:#f4efe5; --deck:#fffaf1; --rule:#dcd3c2;
-  --worklight:#b06f0a; --cue:#2a6f93; --tally:#b8382e;
-  --text:#1d2330; --muted:#5b6374; --onwork:#fffaf1;
-  --stage:#1b2029; --stagetext:#ece7dc; --stagemuted:#a9b0bf; --beam:rgba(240,180,76,.30);
-  --phone:#1d2330; --shadow:0 18px 40px rgba(29,35,48,.18);
-  --stencil:"Big Shoulders Stencil Display","Impact","Arial Narrow",sans-serif;
-  --body:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
+  --paper:#eef0ec; --sheet:#ffffff; --rule:#d5d9d2; --ink:#1f2328; --muted:#555c63;
+  --blue:#2b5fb8; --tape:#e7b416; --red:#d7473a;
+  --head:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --house:#141820; --deck:#1d2330; --rule:#2c3445;
-    --worklight:#f0b44c; --cue:#6fb7d9; --tally:#e2574c;
-    --text:#ece7dc; --muted:#9aa3b5; --onwork:#141820;
-    --stage:#0e1117; --stagetext:#ece7dc; --stagemuted:#9aa3b5; --beam:rgba(240,180,76,.22);
-    --phone:#0b0e13; --shadow:0 18px 40px rgba(0,0,0,.45);
-    color-scheme:dark;
+    --paper:#15181b; --sheet:#1d2126; --rule:#2e343a; --ink:#e8eae6; --muted:#a3aab0;
+    --blue:#7ea6ec; --tape:#e7b416; --red:#ef6b5f; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --house:#141820; --deck:#1d2330; --rule:#2c3445;
-  --worklight:#f0b44c; --cue:#6fb7d9; --tally:#e2574c;
-  --text:#ece7dc; --muted:#9aa3b5; --onwork:#141820;
-  --stage:#0e1117; --stagetext:#ece7dc; --stagemuted:#9aa3b5; --beam:rgba(240,180,76,.22);
-  --phone:#0b0e13; --shadow:0 18px 40px rgba(0,0,0,.45);
-  color-scheme:dark;
+  --paper:#15181b; --sheet:#1d2126; --rule:#2e343a; --ink:#e8eae6; --muted:#a3aab0;
+  --blue:#7ea6ec; --tape:#e7b416; --red:#ef6b5f; color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--house);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;overflow-x:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 img{max-width:100%;height:auto;display:block}
-a{color:var(--cue)}
-.band{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:1080px;margin:0 auto;min-width:0}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
-h1,h2,h3{font-family:var(--stencil);font-weight:800;line-height:1.02;text-wrap:balance;margin:0}
-h2{font-size:clamp(30px,5vw,44px);letter-spacing:.01em}
-h3{font-size:24px;letter-spacing:.02em}
+a{color:var(--blue)}
+h1,h2{font-family:var(--head);font-weight:700;line-height:1.08;text-wrap:balance;margin:0}
+h1{font-size:clamp(38px,6vw,56px)}
+h2{font-size:clamp(28px,4vw,36px)}
 p{margin:0}
+.page{max-width:1000px;margin:0 auto}
+.text{max-width:640px}
 
-/* ---------- Stage (hero) ---------- */
-.stage{background:var(--stage);color:var(--stagetext);position:relative;overflow:hidden;padding-block:20px 56px}
-.stage::before{content:"";position:absolute;inset:-10% 30% auto -20%;height:130%;
-  background:radial-gradient(ellipse at 30% 0%,var(--beam),transparent 62%);pointer-events:none}
-.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
-  background:repeating-linear-gradient(90deg,#e7b416 0 28px,#1b2029 28px 40px)}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:relative}
-.brand{font-family:var(--stencil);font-weight:800;font-size:26px;letter-spacing:.08em;color:var(--stagetext);text-decoration:none}
-.top nav{display:flex;gap:18px;flex-wrap:wrap}
-.top nav a{color:var(--stagemuted);text-decoration:none;font-family:var(--mono);font-size:13px;letter-spacing:.06em}
-.top nav a:hover{color:var(--stagetext)}
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;margin-top:44px;position:relative}
-.hero > div{min-width:0}
-.hero .eyebrow{color:#f0b44c}
-.hero h1{font-size:clamp(46px,8vw,86px);margin-top:12px}
-.hero h1 em{font-style:normal;color:#f0b44c}
-.lede{margin-top:18px;font-size:19px;color:var(--stagetext);max-width:34em}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:12px;font-weight:700;text-decoration:none;font-size:17px}
-.btn.primary{background:#f0b44c;color:#141820}
-.btn.ghost{border:2px solid #4a5366;color:var(--stagetext)}
-.btn:hover{filter:brightness(1.08)}
-.fine{margin-top:16px;font-size:14px;color:var(--stagemuted)}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding-block:22px;border-bottom:1px solid var(--rule)}
+.name{font-family:var(--head);font-weight:700;font-size:24px;color:var(--ink);text-decoration:none;letter-spacing:.02em}
+header nav{display:flex;gap:20px;flex-wrap:wrap;font-size:15px}
+header nav a{color:var(--muted);text-decoration:none}
+header nav a:hover{color:var(--ink)}
 
-/* Phone + Mac picture */
-.rig{position:relative;min-height:440px}
-.mac{position:absolute;right:0;top:30px;width:92%;border-radius:10px;overflow:hidden;background:#2c3445;
-  box-shadow:0 24px 60px rgba(0,0,0,.5);border:1px solid #3a4356}
-.mac .bar{height:22px;display:flex;gap:6px;align-items:center;padding-left:10px;background:#2c3445}
-.mac .bar i{width:9px;height:9px;border-radius:50%;background:#59627a}
-.phone{position:absolute;left:0;bottom:0;width:44%;max-width:210px;border-radius:30px;padding:8px;background:var(--phone);
-  box-shadow:0 30px 60px rgba(0,0,0,.6);border:1px solid #3a4356}
-.phone .screen{position:relative;border-radius:23px;overflow:hidden}
-.laser{position:absolute;left:0;right:0;height:2px;top:30%;background:#ff3b30;
-  box-shadow:0 0 10px 2px rgba(255,59,48,.7);animation:sweep 3.2s ease-in-out infinite alternate}
-@keyframes sweep{from{top:22%}to{top:62%}}
-@media (prefers-reduced-motion:reduce){.laser{animation:none}}
+.intro{padding-block:56px 36px;display:grid;gap:18px}
+.intro .lede{font-size:20px;color:var(--muted)}
+.actions{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;border-radius:8px;background:var(--blue);color:#fff;font-weight:600;text-decoration:none}
+:root[data-theme="dark"] .btn{color:#15181b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#15181b}}
+.small{font-size:15px;color:var(--muted)}
 
-/* ---------- Sections ---------- */
-section{padding-block:64px}
-.head{display:grid;gap:10px;max-width:40em;margin-bottom:32px}
-.head .eyebrow{color:var(--worklight)}
-.head p{color:var(--muted)}
+.shot{margin:0;display:grid;gap:8px}
+.shot img{border:1px solid var(--rule);border-radius:6px;background:var(--sheet)}
+.shot figcaption{font-size:14px;color:var(--muted)}
 
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:cue}
-.step{background:var(--deck);border:1px solid var(--rule);border-radius:14px;padding:18px;display:grid;gap:8px;align-content:start;min-width:0}
-.step .q{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--worklight);font-weight:600}
-.step .q::before{counter-increment:cue;content:"CUE " counter(cue) " · "}
-.step h3{font-size:22px}
-.step p{font-size:15px;color:var(--muted)}
+section{padding-block:52px;border-top:1px solid var(--rule);display:grid;gap:22px}
+section:first-of-type{border-top:0}
 
-.shots{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;margin-top:40px}
-figure{margin:0;display:grid;gap:10px;min-width:0}
-figure img{border-radius:12px;border:1px solid var(--rule);box-shadow:var(--shadow)}
-figcaption{font-size:14px;color:var(--muted)}
-.phones{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.letter{display:grid;gap:14px}
+.letter p{max-width:640px}
+.sig{font-size:15px;color:var(--muted)}
 
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
-.feat{background:var(--deck);padding:22px;display:grid;gap:6px;align-content:start}
-.feat b{font-family:var(--stencil);font-size:22px;letter-spacing:.02em;font-weight:800}
-.feat span{font-size:15px;color:var(--muted)}
-.feat .tag{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--tally);text-transform:uppercase}
+.owner{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.owner > div{min-width:0}
+dl{margin:0;display:grid;gap:18px}
+dt{font-weight:600}
+dd{margin:2px 0 0;color:var(--muted)}
 
-.apps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.app{background:var(--deck);border:1px solid var(--rule);border-radius:16px;padding:24px;display:grid;grid-template-columns:72px 1fr;gap:18px;align-items:start}
-.app img{width:72px;height:72px;border-radius:16px}
-.app div{display:grid;gap:6px;min-width:0}
-.app p{font-size:15px;color:var(--muted)}
-.app .need{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--text)}
-.warn{color:var(--tally);font-weight:700}
-.soon{margin-top:18px;font-size:15px;color:var(--muted);border:1px dashed var(--rule);border-radius:14px;padding:16px 20px}
-.soon .eyebrow{color:var(--worklight);margin-right:6px}
-.soon b{color:var(--text)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.split > *{min-width:0}
 
-.beta{background:var(--deck);border:2px solid var(--worklight);border-radius:18px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
-.beta > div{display:grid;gap:8px;min-width:0}
-.beta p{color:var(--muted)}
-.beta .addr{font-family:var(--mono);font-weight:600;color:var(--text);user-select:all}
-.beta .btn.primary{background:var(--worklight);color:var(--onwork)}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px 10px 0;border-bottom:1px solid var(--rule)}
+th{font-weight:600;width:34%}
+td{color:var(--muted)}
 
-footer{border-top:1px solid var(--rule);padding-block:28px 40px;font-size:14px;color:var(--muted)}
-footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.phones{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:20px}
+
+ul.plain{margin:0;padding-left:20px;display:grid;gap:8px;max-width:640px}
+ul.plain li::marker{color:var(--muted)}
+
+.join{background:var(--sheet);border:1px solid var(--rule);border-left:6px solid var(--tape);border-radius:6px;padding:26px;display:grid;gap:12px}
+.addr{font-family:var(--mono);font-size:16px;color:var(--ink);user-select:all}
+
+footer{border-top:1px solid var(--rule);padding-block:24px 40px;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 footer nav{display:flex;gap:18px;flex-wrap:wrap}
 
-@media (max-width:860px){
-  .hero{grid-template-columns:1fr;gap:28px}
-  .rig{min-height:0;aspect-ratio:1.25/1;max-width:560px}
-  .steps{grid-template-columns:1fr 1fr}
-  .shots{grid-template-columns:1fr}
-  .features{grid-template-columns:1fr 1fr}
-  .apps{grid-template-columns:1fr}
-  .beta{grid-template-columns:1fr}
+@media (max-width:820px){
+  .owner,.split{grid-template-columns:1fr}
+  .intro{padding-block:40px 28px}
 }
-@media (max-width:520px){
-  .steps,.features{grid-template-columns:1fr}
-  .top nav{gap:14px}
-  .app{grid-template-columns:56px 1fr}
-  .app img{width:56px;height:56px;border-radius:13px}
+@media (max-width:480px){
+  th,td{display:block;width:auto;padding:0}
+  th{padding-top:12px}
+  td{padding-bottom:12px}
 }
 </style>
 </head>
 <body>
+<div class="page">
 
-<header class="stage band">
-  <div class="wrap">
-    <div class="top">
-      <a class="brand" href="./">LOHRBOOK</a>
-      <nav aria-label="Site">
-        <a href="install/">Install</a>
-        <a href="guides/office/">Office guide</a>
-        <a href="guides/crew/">Crew guide</a>
-      </nav>
-    </div>
-    <div class="hero">
-      <div>
-        <p class="eyebrow">Scan Sheet · Scan Office · 1.35 beta</p>
-        <h1>Check the gear in. <em>See what's missing.</em></h1>
-        <p class="lede">Crew check equipment against the list on their iPhones: tick it, count it, scan the barcode,
-          read the label. The office Mac collects every phone's results and writes the report.</p>
-        <div class="cta">
-          <a class="btn primary" href="install/">Join the free beta</a>
-          <a class="btn ghost" href="guides/crew/">Watch the crew guide</a>
-        </div>
-        <p class="fine">Built by a broadcast lighting designer. Free until March 2, 2027.</p>
-      </div>
-      <div class="rig" aria-hidden="true">
-        <div class="mac"><div class="bar"><i></i><i></i><i></i></div><img src="img/office-lines.jpg" alt="" width="1280" height="800"></div>
-        <div class="phone"><div class="screen"><img src="img/phone-check.jpg" alt="" width="368" height="800"><div class="laser"></div></div></div>
-      </div>
-    </div>
-  </div>
+<header class="top">
+  <a class="name" href="./">Lohrbook</a>
+  <nav aria-label="Site">
+    <a href="guides/office/">Office guide</a>
+    <a href="guides/crew/">Crew guide</a>
+    <a href="install/">Install</a>
+    <a href="privacy/">Privacy</a>
+  </nav>
 </header>
 
+<div class="intro">
+  <h1 class="text">Know what came in, what didn't, and who checked it.</h1>
+  <p class="text lede">Scan Sheet is a check-in system for lighting, grip and production equipment. Your crew checks the
+    rental list on their iPhones. You get a record you can stand behind when production or the rental house asks
+    where something is.</p>
+  <div class="actions">
+    <a class="btn" href="#join">Ask to join the beta</a>
+    <span class="small">Free until March 2, 2027 · Mac and iPhone</span>
+  </div>
+</div>
+
+<figure class="shot">
+  <img src="img/office-report.jpg" alt="Scan Office's report for production: damaged items and what is still to check, listed by case" width="1280" height="800">
+  <figcaption>The report for production, from the office Mac: what's damaged and what's still unaccounted for, case by
+    case. Saved as a PDF. (Sample job, made-up data.)</figcaption>
+</figure>
+
 <main>
-  <section class="band">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">How a check runs</p>
-        <h2>From the list to the report in four cues</h2>
-        <p>The office brings in the equipment list, hands each crew their part, and gets the answers back.</p>
-      </div>
-      <div class="steps">
-        <div class="step"><span class="q">Office</span><h3>Import the list</h3><p>Open the rental list or manifest spreadsheet. Scan Office reads the columns and shows you its guesses to confirm.</p></div>
-        <div class="step"><span class="q">Office</span><h3>Send each crew a list</h3><p>Pick the cases or lines for each crew. Phones on the same Wi-Fi pair with a 6-digit code, or get the list by email.</p></div>
-        <div class="step"><span class="q">Crew</span><h3>Tick, count, scan</h3><p>Count by case, scan barcodes, read serials off labels. Flag what's damaged, back-ordered or not sure.</p></div>
-        <div class="step"><span class="q">Office</span><h3>Review and report</h3><p>See what needs a person, then save the report for production: what's missing and damaged, case by case.</p></div>
-      </div>
-      <div class="shots">
-        <figure>
-          <img src="img/office-report.jpg" alt="Scan Office's Report for production page: damaged items and what is still to check, by case" width="1280" height="800" loading="lazy">
-          <figcaption>Scan Office: the report for production, with damaged items and what's still to check, by case.</figcaption>
-        </figure>
-        <div class="phones">
-          <figure>
-            <img src="img/phone-label.jpg" alt="Scan Sheet reading a serial number from an equipment label" width="368" height="800" loading="lazy">
-            <figcaption>Read a label. You confirm the serial.</figcaption>
-          </figure>
-          <figure>
-            <img src="img/phone-handoff.jpg" alt="Scan Sheet's Leave for another crew screen with two lines ticked" width="368" height="800" loading="lazy">
-            <figcaption>Leave lines for another crew.</figcaption>
-          </figure>
-        </div>
-      </div>
-    </div>
-  </section>
+<section>
+  <div class="letter">
+    <h2>Why it exists</h2>
+    <p>I'm a broadcast lighting designer. On most jobs the gear check is a printed rental list, a pen, and whoever has
+      time. It works until something goes missing. Then nobody can say who counted that case, when, or whether the
+      fixture was damaged when it came off the truck.</p>
+    <p>I built Scan Sheet so that question has an answer. The crew does the same check they already do, on their
+      phones, and every tick, count, serial and damage note is kept with a name and a time.</p>
+    <p class="sig">Paul Lohr</p>
+  </div>
+</section>
 
-  <section class="band" style="padding-top:0">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Made for the load-in</p>
-        <h2>What it does today</h2>
-        <p>Everything here is in the 1.35 beta. Nothing on this page is a promise of a future feature.</p>
-      </div>
-      <div class="features">
-        <div class="feat"><b>Barcodes and labels</b><span>Scan asset tags, or point the camera at a printed label and pick the serial from what it reads.</span></div>
-        <div class="feat"><span class="tag">No guessing</span><b>A person confirms every serial</b><span>A serial read off a label is only a suggestion. It isn't saved until you tap it.</span></div>
-        <div class="feat"><b>Count by case</b><span>Count loose gear or case by case. Short counts and spares are noted for the office.</span></div>
-        <div class="feat"><b>Flag the problems</b><span>Damaged on arrival, back-ordered by the shop, or "not sure": each one goes to the office to sort.</span></div>
-        <div class="feat"><b>Split the work</b><span>Leave lines for another crew, so nothing is reported missing just because it was someone else's.</span></div>
-        <div class="feat"><span class="tag">Private</span><b>No accounts, no tracking</b><span>Lists stay on your iPhone and Mac. Phones talk to the office over your own Wi-Fi, encrypted.</span></div>
-      </div>
+<section>
+  <h2>What you get as the owner</h2>
+  <div class="owner">
+    <dl>
+      <div><dt>A record of who checked what, and when</dt>
+        <dd>Every change from every phone, with the person, the list and the time. Filter by person or list.</dd></div>
+      <div><dt>Problems in one place</dt>
+        <dd>Damaged on arrival, owed by the vendor, extras the shop sent, lines nobody was sure about. Each one waits
+          in a review list until someone decides.</dd></div>
+      <div><dt>Serial numbers against your list</dt>
+        <dd>Read from barcodes or labels, confirmed by a person, never guessed. Scan Office writes the next version of
+          your manifest with them. Your original file is never changed.</dd></div>
+      <div><dt>Photos where they settle arguments</dt>
+        <dd>A photo on a damage note, and a photo of the signed delivery ticket.</dd></div>
+      <div><dt>A report you can send</dt>
+        <dd>Missing and damaged gear by case, ready for production or the rental house.</dd></div>
+    </dl>
+    <div style="display:grid;gap:24px">
+      <figure class="shot">
+        <img src="img/office-activity.jpg" alt="Scan Office's live activity: each change sent by the phones, with who, which list and when" width="1280" height="800" loading="lazy">
+        <figcaption>Who did what, from which phone, at what time.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="img/office-review.jpg" alt="Scan Office's review page: a damaged light, catalog matches to confirm, and a clamp owed by the vendor" width="1280" height="800" loading="lazy">
+        <figcaption>What needs a decision, with where it came from.</figcaption>
+      </figure>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="band" style="padding-top:0">
-    <div class="wrap">
-      <div class="head">
-        <p class="eyebrow">Two apps, one check</p>
-        <h2>Phone on the dock. Mac in the office.</h2>
-      </div>
-      <div class="apps">
-        <div class="app">
-          <img src="img/icon-scan-sheet.png" alt="Scan Sheet app icon" width="72" height="72" loading="lazy">
-          <div><h3>Scan Sheet</h3><p>For each crew member. Get a list, check it, send it back. Installed through Apple's TestFlight during the beta.</p>
-            <p class="need">iPhone</p><p><a href="guides/crew/">Crew guide</a></p></div>
-        </div>
-        <div class="app">
-          <img src="img/icon-scan-office.png" alt="Scan Office app icon" width="72" height="72" loading="lazy">
-          <div><h3>Scan Office</h3><p>For whoever runs the job. Import lists, hand them out, review the results, save the report.</p>
-            <p class="need">Mac with Apple silicon (M1 or later), macOS 14 or newer</p>
-            <p class="warn">Does not run on Intel Macs.</p><p><a href="guides/office/">Office guide</a></p></div>
-        </div>
-      </div>
-      <p class="soon"><span class="eyebrow">In development</span> <b>Lohrbook LiDAR</b> (iPhone): scan a room with your phone's LiDAR and get the raw data for AI, CAD or Blender. Not on the App Store yet. <a href="privacy/lidar/">Its privacy page</a>.</p>
-    </div>
-  </section>
+<section>
+  <h2>What it takes to run</h2>
+  <table>
+    <tr><th>Your list</th><td>Starts from the list you already get: Excel or CSV. You check the column guesses once.</td></tr>
+    <tr><th>The office</th><td>Scan Office on a Mac with Apple silicon (M1 or later), macOS 14 or newer. Not Intel Macs.</td></tr>
+    <tr><th>The crew</th><td>Scan Sheet on their own iPhones, through Apple's TestFlight during the beta. They type their
+      name and open the list. The crew guide is a few minutes long.</td></tr>
+    <tr><th>Connection</th><td>Phones pair with the office over your own Wi-Fi, encrypted. Without it, lists and results
+      go by email.</td></tr>
+    <tr><th>Your data</th><td>Stays on your Mac and your crew's phones. No accounts, no cloud, no tracking. We never see
+      your lists. <a href="privacy/">Privacy page</a>.</td></tr>
+    <tr><th>Cost</th><td>Free during the beta, until March 2, 2027. Some features may become part of a paid plan
+      after that.</td></tr>
+  </table>
+</section>
 
-  <section class="band" style="padding-top:0">
-    <div class="wrap">
-      <div class="beta">
-        <div>
-          <p class="eyebrow" style="color:var(--worklight)">Beta testers wanted</p>
-          <h2>Try it on your next check-in</h2>
-          <p>Free until March 2, 2027. Spots are limited, so testers are added by hand. Email
-            <span class="addr">paultlohr@gmail.com</span> and you'll get an iPhone invite and the Mac download.</p>
-        </div>
-        <a class="btn primary" href="install/">How to join</a>
-      </div>
-    </div>
-  </section>
+<section>
+  <h2>What the crew sees</h2>
+  <p class="text">One list, one job: tick it, count it by case, scan the barcode or read the label, flag what's wrong,
+    send it back. Lines that belong to another crew can be handed off, so they aren't reported missing.</p>
+  <div class="phones">
+    <figure class="shot"><img src="img/phone-check.jpg" alt="Scan Sheet showing a delivery list with 5 of 5 lines still to check" width="368" height="800" loading="lazy"></figure>
+    <figure class="shot"><img src="img/phone-label.jpg" alt="Scan Sheet reading a serial number off an equipment label" width="368" height="800" loading="lazy"></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Where it stands</h2>
+  <p class="text">It's a beta, in early testing. Everything above is built and in version 1.35. Not available yet:</p>
+  <ul class="plain">
+    <li>Importing PDF lists (planned; for now, the spreadsheet version of the list).</li>
+    <li>Scan Office for Windows or Intel Macs.</li>
+  </ul>
+  <p class="text">Lohrbook LiDAR (iPhone), a room scanner that exports the raw data for CAD, Blender or AI, is also in
+    development and not on the App Store yet. <a href="privacy/lidar/">Its privacy page</a>.</p>
+</section>
+
+<section id="join">
+  <div class="join">
+    <h2>Try it on a real check-in</h2>
+    <p class="text">I'm looking for a few companies and crews to use it on their next load-in or return and tell me what
+      got in the way. It's free, and you keep your data. Email me and you'll get the iPhone invite and the Mac download.</p>
+    <p class="addr">paultlohr@gmail.com</p>
+    <p class="small">How it installs: <a href="install/">install page</a>. How it works: <a href="guides/office/">office guide</a> · <a href="guides/crew/">crew guide</a>.</p>
+  </div>
+</section>
 </main>
 
-<footer class="band">
-  <div class="wrap">
-    <span>© 2026 Paul Lohr · Lohrbook</span>
-    <nav aria-label="Footer"><a href="install/">Install</a><a href="privacy/">Privacy</a><a href="privacy/lidar/">LiDAR privacy</a><a href="mailto:paultlohr@gmail.com">Contact</a></nav>
-  </div>
+<footer>
+  <span>© 2026 Paul Lohr</span>
+  <nav aria-label="Footer"><a href="install/">Install</a><a href="privacy/">Privacy</a><a href="privacy/lidar/">LiDAR privacy</a><a href="mailto:paultlohr@gmail.com">Contact</a></nav>
 </footer>
 
+</div>
 </body>
 </html>
